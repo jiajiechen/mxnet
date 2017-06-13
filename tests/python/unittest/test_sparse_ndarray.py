@@ -277,7 +277,7 @@ def test_sparse_nd_binary():
     check_binary(lambda x, y: x == y)
 
 
-def test_sparse_nd_rhs_op_overload():
+def test_sparse_nd_binary_rop():
     N = 100
     def check(fn):
         for _ in range(N):
