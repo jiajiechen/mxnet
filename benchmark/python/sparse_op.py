@@ -80,7 +80,6 @@ def test_dot_real(data_dict):
     
     print "Running Benchmarking on %r data" % data_dict['data_mini']
     for batch_size in data_dict['batch_size']:  # iterator through different batch size of choice
-        # pdb.set_trace()
         print "batch_size is %d" % batch_size
         # model
         data_shape = (k, )
@@ -138,18 +137,6 @@ def test_dot_synthetic():
         diff = end -start
         return diff / repeat
 
-    def measure_cost(repeat, f, *args, **kwargs):
-        # start bench
-        start = time.time()
-        results = []
-        for i in range(repeat):
-            results.append(f(*args, **kwargs))
-        for result in results:
-            result.wait_to_read()
-        end = time.time()
-        diff = end - start
-        return diff / repeat
-
     def bench_dot_forward(m, k, n, density, ctx, repeat):
         set_default_context(ctx)
         dns = mx.nd.random_uniform(shape=(k, n)).copyto(ctx)
@@ -166,7 +153,7 @@ def test_dot_synthetic():
             dns.wait_to_read()
             d.wait_to_read()
             cost = measure_cost(repeat, mx.nd.dot, d, dns)
-            costs.append(cost / repeat)
+            costs.append(cost)
         ratio = costs[0] / costs[1]
 
         costs_baseline = []
@@ -236,8 +223,8 @@ def test_dot_synthetic():
             for den in density:
                 bench_dot_backward(m, k[i], n[i], den, ctx, num_repeat)
 
+
 if __name__ == "__main__":
-    import pdb
     test_dot_real(avazu)
     test_dot_real(kdda)
     test_dot_synthetic()
