@@ -134,7 +134,7 @@ def test_dot_synthetic():
         for i in range(repeat):
             dot(transpose(lhs), rhs)
         end = time.time()
-        diff = end -start
+        diff = end - start
         return diff / repeat
 
     def bench_dot_forward(m, k, n, density, ctx, repeat):
