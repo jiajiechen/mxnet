@@ -111,9 +111,7 @@ def test_dot_real(data_dict):
         ratio = t_dense / t_sparse
         print('density(%)\tn\tm\tk\tt_dense/t_sparse\tt_dense\tt_sparse')
         fmt = "%0.4f\t\t%d\t%d\t%d\t%0.2f\t\t\t%0.4f\t%0.6f"
-        print(
-    	    fmt % (density * 100, batch_size, m, k, ratio, t_dense, t_sparse)
-        )
+        print(fmt % (density * 100, batch_size, m, k, ratio, t_dense, t_sparse))
 
 
 def test_dot_synthetic():
