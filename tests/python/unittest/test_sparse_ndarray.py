@@ -243,7 +243,7 @@ def test_sparse_nd_lesser_equal():
 
 
 def test_sparse_nd_binary():
-    N = 100
+    N = 1
     def check_binary(fn):
         for _ in range(N):
             ndim = 2
@@ -257,23 +257,51 @@ def test_sparse_nd_binary():
                     lshape[ndim-i-1] = 1
                 elif sep < 0.66:
                     rshape[bdim-i-1] = 1
-            lhs = np.random.normal(0, 1, size=lshape)
-            rhs = np.random.normal(0, 1, size=rshape)
+            lhs = np.random.uniform(0, 1, size=lshape)
+            rhs = np.random.uniform(0, 1, size=rshape)
             lhs_nd = mx.nd.array(lhs).to_csr()
             rhs_nd = mx.nd.array(rhs).to_csr()
             assert_allclose(fn(lhs, rhs),
                             fn(lhs_nd, rhs_nd).asnumpy(),
                             rtol=1e-4, atol=1e-4)
 
-    #check_binary(lambda x, y: x + y)
+    check_binary(lambda x, y: x + y)
     check_binary(lambda x, y: x - y)
     check_binary(lambda x, y: x * y)
     check_binary(lambda x, y: x / y)
+    check_binary(lambda x, y: x ** y)
     check_binary(lambda x, y: x > y)
     check_binary(lambda x, y: x < y)
     check_binary(lambda x, y: x >= y)
     check_binary(lambda x, y: x <= y)
     check_binary(lambda x, y: x == y)
+
+
+def test_sparse_nd_rhs_op_overload():
+    N = 100
+    def check(fn):
+        for _ in range(N):
+            ndim = 2
+            shape = np.random.randint(1, 6, size=(ndim,))
+            np_nd = np.random.normal(0, 1, size=shape)
+            csr_nd = mx.nd.array(np_nd).to_csr()
+            assert_allclose(
+                fn(np_nd),
+                fn(csr_nd).asnumpy(),
+                rtol=1e-4,
+                atol=1e-4
+            )
+    check(lambda x: 1 + x)
+    check(lambda x: 1 - x)
+    check(lambda x: 1 * x)
+    check(lambda x: 1 / x)
+    check(lambda x: 2 ** x)
+    check(lambda x: 1 > x)
+    check(lambda x: 0.5 > x)
+    check(lambda x: 0.5 < x)
+    check(lambda x: 0.5 >= x)
+    check(lambda x: 0.5 <= x)
+    check(lambda x: 0.5 == x)
 
 
 def test_sparse_nd_negate():
