@@ -243,7 +243,7 @@ def test_sparse_nd_lesser_equal():
 
 
 def test_sparse_nd_binary():
-    N = 1
+    N = 100
     def check_binary(fn):
         for _ in range(N):
             ndim = 2
