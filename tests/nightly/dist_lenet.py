@@ -8,6 +8,7 @@ import mxnet as mx
 import argparse
 import train_mnist
 import logging
+from importlib import import_module
 
 if __name__ == '__main__':
     args = train_mnist.parse_args()
@@ -16,7 +17,7 @@ if __name__ == '__main__':
     loader = train_mnist.get_iterator(data_shape)
     kv = mx.kvstore.create(args.kv_store)
     (train, val) = loader(args, kv)
-    net = train_mnist.get_lenet()
+    net = import_module('symbols.'+args.network)
 
     head = '%(asctime)-15s Node[' + str(kv.rank) + '] %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)

@@ -15,7 +15,7 @@ def read_data(label, image):
     """
     download and read data into numpy
     """
-    base_url = 'http://yann.lecun.com/exdb/mnist/'
+    base_url = 'http://data.mxnet.io/data/mnist/'
     with gzip.open(download_file(base_url+label, os.path.join('data',label))) as flbl:
         magic, num = struct.unpack(">II", flbl.read(8))
         label = np.fromstring(flbl.read(), dtype=np.int8)
@@ -53,9 +53,9 @@ if __name__ == '__main__':
                         help='the number of classes')
     parser.add_argument('--num-examples', type=int, default=60000,
                         help='the number of training examples')
-    
+
     parser.add_argument('--add_stn',  action="store_true", default=False, help='Add Spatial Transformer Network Layer (lenet only)')
-    
+
     fit.add_fit_args(parser)
     parser.set_defaults(
         # network

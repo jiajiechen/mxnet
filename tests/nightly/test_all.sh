@@ -37,8 +37,7 @@ juLog -name=Python.Local.KVStore -error=Error python test_kvstore.py
 juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py -n 4 python dist_sync_kvstore.py
 
 # download data
-juLog -name=DownloadData bash ./download.sh
-
+# juLog -name=DownloadData bash ./download.sh
 
 # check if the final evaluation accuracy exceed the threshold
 check_val() {
@@ -50,36 +49,35 @@ check_val() {
     rm -f log
 }
 
-
 example_dir=../../example/image-classification
 # python: lenet + mnist
 test_lenet() {
     python $example_dir/train_mnist.py \
-        --data-dir `pwd`/data/mnist/ --network lenet --gpus $gpus --num-epochs 10 \
+        --network lenet --gpus $gpus --num-epochs 10 \
         2>&1 | tee log
     check_val 0.99
 }
 juLog -name=Python.Lenet.Mnist -error=Fail test_lenet
 
 # python: distributed lenet + mnist
-test_dist_lenet() {
-    ../../tools/launch.py -n ${num_gpus} \
-        python ./dist_lenet.py --data-dir `pwd`/data/mnist/ \
-        --kv-store dist_sync \
-        --num-epochs 10 \
-        2>&1 | tee log
-    check_val 0.98
-}
-juLog -name=Python.Distributed.Lenet.Mnist -error=Fail test_dist_lenet
+#test_dist_lenet() {
+#    ../../tools/launch.py -n ${num_gpus} \
+#        python ./dist_lenet.py --data-dir `pwd`/data/mnist/ \
+#        --kv-store dist_sync \
+#        --num-epochs 10 \
+#        2>&1 | tee log
+#    check_val 0.98
+#}
+#juLog -name=Python.Distributed.Lenet.Mnist -error=Fail test_dist_lenet
 
 # python: inception + cifar10
-test_inception_cifar10() {
-    python $example_dir/train_cifar10.py \
-        --data-dir `pwd`/data/cifar10/ --gpus $gpus --num-epochs 20 --batch-size 256 \
-        2>&1 | tee log
-    check_val 0.82
-}
-juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
+#test_inception_cifar10() {
+#    python $example_dir/train_cifar10.py \
+#        --data-dir `pwd`/data/cifar10/ --gpus $gpus --num-epochs 20 --batch-size 256 \
+#        2>&1 | tee log
+#    check_val 0.82
+#}
+#juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
 
 # build without CUDNN
 cat >>../../config.mk <<EOF
@@ -88,6 +86,6 @@ EOF
 juLog -name=BuildWithoutCUDNN -error=Error build
 
 # python: multi gpus lenet + mnist
-juLog -name=Python.Multi.Lenet.Mnist -error=Error python multi_lenet.py
+#juLog -name=Python.Multi.Lenet.Mnist -error=Error python multi_lenet.py
 
 exit $errors
