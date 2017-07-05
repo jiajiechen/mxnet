@@ -71,13 +71,13 @@ juLog -name=Python.Lenet.Mnist -error=Fail test_lenet
 #juLog -name=Python.Distributed.Lenet.Mnist -error=Fail test_dist_lenet
 
 # python: inception + cifar10
-#test_inception_cifar10() {
-#    python $example_dir/train_cifar10.py \
-#        --data-dir `pwd`/data/cifar10/ --gpus $gpus --num-epochs 20 --batch-size 256 \
-#        2>&1 | tee log
-#    check_val 0.82
-#}
-#juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
+test_inception_cifar10() {
+    python $example_dir/train_cifar10.py \
+        --gpus $gpus --num-epochs 20 --batch-size 256 \
+        2>&1 | tee log
+    check_val 0.82
+}
+juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
 
 # build without CUDNN
 cat >>../../config.mk <<EOF

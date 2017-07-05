@@ -1,6 +1,9 @@
 FROM nvidia/cuda:7.5-cudnn5-devel
 MAINTAINER Ly Nguyen <lynguyen@amazon.com>
 
+# bc
+RUN apt-get install -y bc
+
 # OPENCV
 RUN apt-mark hold libcudnn5 libcudnn5-dev
 RUN apt-get update && apt-get -y upgrade
