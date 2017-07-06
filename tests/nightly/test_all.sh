@@ -82,10 +82,10 @@ test_inception_cifar10() {
 juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
 
 # build without CUDNN
-cat >>../../config.mk <<EOF
-USE_CUDNN=0
-EOF
-juLog -name=BuildWithoutCUDNN -error=Error build
+#cat >>../../config.mk <<EOF
+#USE_CUDNN=0
+#EOF
+#juLog -name=BuildWithoutCUDNN -error=Error build
 
 # python: multi gpus lenet + mnist
 #juLog -name=Python.Multi.Lenet.Mnist -error=Error python multi_lenet.py
