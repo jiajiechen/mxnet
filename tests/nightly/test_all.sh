@@ -36,7 +36,7 @@ juLog -name=Build -error=Error build
 juLog -name=Python.Local.KVStore -error=Error python test_kvstore.py
 
 # python: distributed kvstore
-juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py -n 4 python dist_sync_kvstore.py
+juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py --launcher=local -n 4 python dist_sync_kvstore.py
 
 # download data
 # juLog -name=DownloadData bash ./download.sh
