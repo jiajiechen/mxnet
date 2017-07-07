@@ -4,15 +4,18 @@
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 cd `pwd`/`dirname $0`
 
-. install_bc.sh
+. install_bc.sh # this need to be removed after the ubuntu image on slave servers have been rebuilt
 . sh2ju.sh
+
 ## clean last build log
 juLogClean
+
 if [ $# -eq 1 ]; then
     num_gpus=$1
 else
     num_gpus=4
 fi
+
 gpus=`seq 0 $((num_gpus-1)) | paste -sd ","`
 
 # build
@@ -30,16 +33,14 @@ USE_CUDNN=1
 USE_DIST_KVSTORE=1
 EOF
 
+## This has passed
 juLog -name=Build -error=Error build
 
 # python: local kvstore
 juLog -name=Python.Local.KVStore -error=Error python test_kvstore.py
 
 # python: distributed kvstore
-juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py --launcher=local -n 4 python dist_sync_kvstore.py
-
-# download data
-# juLog -name=DownloadData bash ./download.sh
+juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py --launcher=local -n 2 python dist_sync_kvstore.py
 
 # check if the final evaluation accuracy exceed the threshold
 check_val() {
@@ -63,14 +64,16 @@ juLog -name=Python.Lenet.Mnist -error=Fail test_lenet
 
 # python: distributed lenet + mnist
 #test_dist_lenet() {
-#    ../../tools/launch.py -n ${num_gpus} \
-#        python ./dist_lenet.py --data-dir `pwd`/data/mnist/ \
-#        --kv-store dist_sync \
-#        --num-epochs 10 \
-#        2>&1 | tee log
+#    ../../tools/launch.py -n ${num_gpus} --launcher=local\
+#    python ./dist_lenet.py \
+#    --data-dir `pwd`/data/mnist/ \
+#    --kv-store dist_sync \
+#    --num-epochs 10 \
+#    2>&1 | tee log
 #    check_val 0.98
 #}
 #juLog -name=Python.Distributed.Lenet.Mnist -error=Fail test_dist_lenet
+
 
 # python: inception + cifar10
 test_inception_cifar10() {
@@ -80,6 +83,7 @@ test_inception_cifar10() {
     check_val 0.82
 }
 juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
+
 
 # build without CUDNN
 #cat >>../../config.mk <<EOF
