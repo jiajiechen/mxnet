@@ -9,7 +9,7 @@ keys = [3, 5, 7]
 shapes = [(4, 4), (100, 100), (2000, 2000)];
 
 lr = .1
-nworker = 4
+nworker = 1 
 nrepeat = 10
 
 ## generate data
