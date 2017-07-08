@@ -4,7 +4,7 @@
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 cd `pwd`/`dirname $0`
 
-. install_bc.sh
+. install_bc.sh # This should be removed after the image on test server has been rebuilt
 . sh2ju.sh
 ## clean last build log
 juLogClean
@@ -36,10 +36,7 @@ juLog -name=Build -error=Error build
 juLog -name=Python.Local.KVStore -error=Error python test_kvstore.py
 
 # python: distributed kvstore
-juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py --launcher=local -n 4 python dist_sync_kvstore.py
-
-# download data
-# juLog -name=DownloadData bash ./download.sh
+# juLog -name=Python.Distributed.KVStore -error=Error ../../tools/launch.py --launcher=local -n 2 python dist_sync_kvstore.py
 
 # check if the final evaluation accuracy exceed the threshold
 check_val() {
@@ -82,10 +79,10 @@ test_inception_cifar10() {
 juLog -name=Python.Inception.Cifar10 -error=Fail test_inception_cifar10
 
 # build without CUDNN
-#cat >>../../config.mk <<EOF
-#USE_CUDNN=0
-#EOF
-#juLog -name=BuildWithoutCUDNN -error=Error build
+cat >>../../config.mk <<EOF
+USE_CUDNN=0
+EOF
+juLog -name=BuildWithoutCUDNN -error=Error build
 
 # python: multi gpus lenet + mnist
 #juLog -name=Python.Multi.Lenet.Mnist -error=Error python multi_lenet.py
